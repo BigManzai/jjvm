@@ -32,6 +32,8 @@ def readToNextCpStruct(clazz):
     remainingSeek = 2
   elif tag == 10:
     remainingSeek = 4
+  elif tag == 12:
+    remainingSeek = 4
   else:
     print "ERROR: Unrecognized tag %d" % tag
     sys.exit(1)
