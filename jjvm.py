@@ -5,8 +5,6 @@ import os
 import struct
 import sys
 
-CP_STRUCT_SIZES = { 7:3, 10:5 }
-
 ###############
 ### CLASSES ###
 ###############
@@ -20,8 +18,10 @@ class MyParser(argparse.ArgumentParser):
 ### SUBROUTINES ###
 ###################
 def lenCpStruct(tag):
-  if tag in CP_STRUCT_SIZES:
-    return CP_STRUCT_SIZES[tag]
+  if tag == 7:
+    return 3
+  elif tag == 10:
+    return 5
   else:
     return -1
 
