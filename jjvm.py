@@ -13,6 +13,15 @@ class MyParser(argparse.ArgumentParser):
         self.print_help()
         sys.exit(2)
 
+###################
+### SUBROUTINES ###
+###################
+def lenCpItem(tag):
+  if tag == 0xa:
+    return 3
+  else:
+    return -1
+
 ############
 ### MAIN ###
 ############
@@ -26,6 +35,7 @@ with open(args.path, "rb") as c:
 
   print "Constant pool count: %d" % cpcount;
 
-  cptag = ord(c.read(1))
+  cpTag = ord(c.read(1))
 
-  print "Got tag: %d" % cptag
+  print "Got tag: %d" % cpTag
+  print "Size: %d" % lenCpItem(cpTag)
