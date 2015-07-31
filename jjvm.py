@@ -19,3 +19,7 @@ with open(args.path, "rb") as c:
   cpcount = struct.unpack(">H", c.read(2))[0] - 1
 
   print "Constant pool count: %d" % cpcount;
+
+  cptag = ord(c.read(1))
+
+  print "Got tag: %d" % cptag
