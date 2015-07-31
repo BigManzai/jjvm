@@ -4,12 +4,18 @@ import argparse
 import struct
 import sys
 
+###############
+### CLASSES ###
+###############
 class MyParser(argparse.ArgumentParser):
     def error(self, message):
         sys.stderr.write('error: %s\n' % message)
         self.print_help()
         sys.exit(2)
 
+############
+### MAIN ###
+############
 parser = MyParser('Run bytecode in jjvm')
 parser.add_argument('path', help='path to class')
 args = parser.parse_args()
