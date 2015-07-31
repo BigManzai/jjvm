@@ -5,7 +5,7 @@ import os
 import struct
 import sys
 
-CP_STRUCT_SIZES = { 0xa:3 }
+CP_STRUCT_SIZES = { 0xa:5 }
 
 ###############
 ### CLASSES ###
@@ -51,4 +51,4 @@ with open(args.path, "rb") as c:
     print "Size: %d" % cpStructSize
   
     cpCount -= 1
-    c.seek(cpStructSize, os.SEEK_CUR)
+    c.seek(cpStructSize - 1, os.SEEK_CUR)
