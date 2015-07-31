@@ -20,7 +20,7 @@ class MyParser(argparse.ArgumentParser):
 def readToNextCpStruct(clazz):
   tag = ord(clazz.read(1))
 
-  print "Field %d" % (tag)
+  print "Tag %d" % (tag)
 
   remainingSeek = 0
 
@@ -55,5 +55,6 @@ with open(args.path, "rb") as clazz:
   print "Constant pool count: %d" % cpCount;
 
   while cpIndex <= cpCount:
+    print "Reading field %d" % cpIndex
     readToNextCpStruct(clazz)
     cpIndex += 1
