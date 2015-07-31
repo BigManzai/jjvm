@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import argparse
+import struct
 import sys
 
 class MyParser(argparse.ArgumentParser):
@@ -14,7 +15,7 @@ parser.add_argument('path', help='path to class')
 args = parser.parse_args()
 
 with open(args.path, "rb") as c:
-  byte = c.read(1)
-  while byte:
-    print '{0:02x}'.format(ord(byte))
-    byte = c.read(1)
+  c.seek(8)
+  cpcount = struct.unpack(">H", c.read(2))[0]
+
+  print "Constant pool count: %d" % cpcount;
