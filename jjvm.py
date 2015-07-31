@@ -16,6 +16,6 @@ args = parser.parse_args()
 
 with open(args.path, "rb") as c:
   c.seek(8)
-  cpcount = struct.unpack(">H", c.read(2))[0]
+  cpcount = struct.unpack(">H", c.read(2))[0] - 1
 
   print "Constant pool count: %d" % cpcount;
