@@ -5,6 +5,8 @@ import os
 import struct
 import sys
 
+CP_STRUCT_SIZES = { 0xa:3 }
+
 ###############
 ### CLASSES ###
 ###############
@@ -18,8 +20,8 @@ class MyParser(argparse.ArgumentParser):
 ### SUBROUTINES ###
 ###################
 def lenCpStruct(tag):
-  if tag == 0xa:
-    return 3
+  if tag in CP_STRUCT_SIZES:
+    return CP_STRUCT_SIZES[tag]
   else:
     return -1
 
