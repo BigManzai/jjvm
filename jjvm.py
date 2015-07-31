@@ -5,7 +5,7 @@ import os
 import struct
 import sys
 
-CP_STRUCT_SIZES = { 0xa:5 }
+CP_STRUCT_SIZES = { 7:3, 10:5 }
 
 ###############
 ### CLASSES ###
