@@ -5,6 +5,23 @@ import os
 import struct
 import sys
 
+TAG_NAMES = {
+  1:"Utf8",
+  3:"Integer",
+  4:"Float",
+  5:"Long",
+  6:"Double",
+  7:"Class", 
+  8:"String",
+  9:"Fieldref", 
+  10:"Methodref", 
+  11:"InterfaceMethodref",
+  12:"NameAndType",
+  15:"MethodHandle",
+  16:"MethodType",
+  18:"InvokeDynamic"
+}
+
 ###############
 ### CLASSES ###
 ###############
@@ -20,7 +37,8 @@ class MyParser(argparse.ArgumentParser):
 def readToNextCpStruct(clazz):
   tag = ord(clazz.read(1))
 
-  print "Tag %d" % (tag)
+  # print "Tag %d %s" % (tag, TAG_NAMES[tag])
+  print "Tag %s" % (TAG_NAMES[tag])
 
   remainingSeek = 0
 
@@ -38,7 +56,7 @@ def readToNextCpStruct(clazz):
     print "ERROR: Unrecognized tag %d" % tag
     sys.exit(1)
   
-  print "Remaining seek %d" % remainingSeek
+  # print "Remaining seek %d" % remainingSeek
 
   clazz.seek(remainingSeek, os.SEEK_CUR)
 
@@ -57,7 +75,7 @@ with open(args.path, "rb") as clazz:
   print "Constant pool count: %d" % cpCount;
 
   while cpIndex <= cpCount:
-    print "Reading field %d" % cpIndex
+    # print "Reading field %d" % cpIndex
     readToNextCpStruct(clazz)
     cpIndex += 1
 
