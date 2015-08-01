@@ -38,27 +38,34 @@ def readToNextCpStruct(clazz):
   tag = ord(clazz.read(1))
 
   # print "Tag %d %s" % (tag, TAG_NAMES[tag])
-  print "Tag %s" % (TAG_NAMES[tag])
+  print "Tag %s" % (TAG_NAMES[tag]),
 
   remainingSeek = 0
 
   if tag == 1:
     # FIXME: Yes, this will blow badly on encountering anything other than ASCII
     # https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html
-    remainingSeek = readU2(clazz)
+    strLen = readU2(clazz)
+    print clazz.read(strLen)
+    # print struct.unpack("s", clazz.read(strLen))[0]
+    # remainingSeek = readU2(clazz)
   elif tag == 7:
     remainingSeek = 2
+    print
   elif tag == 10:
     remainingSeek = 4
+    print
   elif tag == 12:
     remainingSeek = 4
+    print
   else:
     print "ERROR: Unrecognized tag %d" % tag
     sys.exit(1)
   
   # print "Remaining seek %d" % remainingSeek
 
-  clazz.seek(remainingSeek, os.SEEK_CUR)
+  if remainingSeek > 0:
+    clazz.seek(remainingSeek, os.SEEK_CUR)
 
 def readU2(clazz):
   return struct.unpack(">H", clazz.read(2))[0]
