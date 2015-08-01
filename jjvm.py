@@ -60,6 +60,9 @@ def readToNextCpStruct(clazz):
 
   clazz.seek(remainingSeek, os.SEEK_CUR)
 
+def readU2(clazz):
+  return struct.unpack(">H", clazz.read(2))[0]
+
 ############
 ### MAIN ###
 ############
@@ -69,7 +72,7 @@ args = parser.parse_args()
 
 with open(args.path, "rb") as clazz:
   clazz.seek(8)
-  cpCount = struct.unpack(">H", clazz.read(2))[0] - 1
+  cpCount = readU2(clazz) - 1
   cpIndex = 1
 
   print "Constant pool count: %d" % cpCount;
