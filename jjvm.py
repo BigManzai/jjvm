@@ -52,6 +52,10 @@ def readToNextCpStruct(clazz):
     # remainingSeek = readU2(clazz)
   elif tag == 7:
     remainingSeek = 2
+  elif tag == 8:
+    remainingSeek = 2
+  elif tag == 9:
+    remainingSeek = 4
   elif tag == 10:
     remainingSeek = 4
   elif tag == 12:
