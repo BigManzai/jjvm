@@ -45,7 +45,7 @@ def readToNextCpStruct(clazz):
   if tag == 1:
     # FIXME: Yes, this will blow badly on encountering anything other than ASCII
     # https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html
-    remainingSeek = struct.unpack(">H", clazz.read(2))[0]
+    remainingSeek = readU2(clazz)
   elif tag == 7:
     remainingSeek = 2
   elif tag == 10:
