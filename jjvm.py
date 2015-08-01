@@ -60,3 +60,5 @@ with open(args.path, "rb") as clazz:
     print "Reading field %d" % cpIndex
     readToNextCpStruct(clazz)
     cpIndex += 1
+
+  print "Pos: %x" % clazz.tell()
