@@ -82,4 +82,12 @@ with open(args.path, "rb") as clazz:
     readToNextCpStruct(clazz)
     cpIndex += 1
 
+  # Skip access flags, tjhis class, super class refs
+  clazz.seek(6, os.SEEK_CUR)
+
+  # TODO: Yes, need to deal with when these aren't actually 0!
+  print "Interfaces count: %d" % readU2(clazz)
+  print "Fields count: %d" % readU2(clazz)
+  print "Methods count: %d" % readU2(clazz)
+
   print "Pos: %x" % clazz.tell()
