@@ -99,6 +99,13 @@ with open(args.path, "rb") as clazz:
   # TODO: Yes, need to deal with when these aren't actually 0!
   print "\nInterfaces count: %d" % readU2(clazz)
   print "Fields count: %d" % readU2(clazz)
-  print "Methods count: %d" % readU2(clazz)
+
+  methodsCount = readU2(clazz)
+  print "Methods count: %d" % methodsCount
+
+  readU2(clazz)
+  methodNameIndex = readU2(clazz)
+
+  print "First method name index: %d" % methodNameIndex
 
   print "Pos: %x" % clazz.tell()
