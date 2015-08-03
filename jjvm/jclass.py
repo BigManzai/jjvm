@@ -39,11 +39,15 @@ class jclass:
       methodsCount = readU2(clazz)
       print "Methods count: %d" % methodsCount
 
+      # access_flags
       readU2(clazz)
       methodNameIndex = readU2(clazz)
 
       print "First method name index: %d" % methodNameIndex
       print "Method name: %s" % self._utf8Strings[methodNameIndex]
+
+      descriptorIndex = readU2(clazz)
+      print "Descriptor: %s" % self._utf8Strings[descriptorIndex]
 
       print "Pos: %x" % clazz.tell()
 
