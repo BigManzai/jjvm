@@ -43,6 +43,7 @@ class jclass:
       methodNameIndex = readU2(clazz)
 
       print "First method name index: %d" % methodNameIndex
+      print "Method name: %s" % self._utf8Strings[methodNameIndex]
 
       print "Pos: %x" % clazz.tell()
 
@@ -54,10 +55,10 @@ class jclass:
 
       while cpIndex <= cpCount:
         # print "Reading field %d" % cpIndex
-        print "%d %s" % (cpIndex, self._readToNextCpStruct(clazz))
+        print "%d %s" % (cpIndex, self._readToNextCpStruct(clazz, cpIndex))
         cpIndex += 1
 
-  def _readToNextCpStruct(self, clazz):
+  def _readToNextCpStruct(self, clazz, index):
     tag = ord(clazz.read(1))
 
     # print "Tag %d %s" % (tag, TAG_NAMES[tag])
@@ -70,7 +71,9 @@ class jclass:
       # https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html
       strLen = readU2(clazz)
       res += " "
-      res += clazz.read(strLen)
+      utf8 = clazz.read(strLen)
+      self._utf8Strings[index] = utf8
+      res += utf8
       # print struct.unpack("s", clazz.read(strLen))[0]
       # remainingSeek = readU2(clazz)
     elif tag == 7:
