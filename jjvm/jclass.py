@@ -88,7 +88,12 @@ class jclass:
       codeLen = readU4(clazz)
       print "Code length: %d" % codeLen
 
-      clazz.read(attrLen - codeLen - 4)
+      codeCount = 1
+      while codeCount <= codeLen:
+        print "%d: %.2x" % (codeCount, ord(clazz.read(1)))
+        codeCount += 1
+
+      clazz.read(attrLen - 8)
 
   def _readCp(self, clazz):
       cpCount = readU2(clazz) - 1
