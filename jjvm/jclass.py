@@ -96,7 +96,8 @@ class jclass:
       # print struct.unpack("s", clazz.read(strLen))[0]
       # remainingSeek = readU2(clazz)
     elif tag == 7:
-      remainingSeek = 2
+      nameIndex = readU2(f)
+      res += " %d" % nameIndex
     elif tag == 8:
       remainingSeek = 2
     elif tag == 9:
