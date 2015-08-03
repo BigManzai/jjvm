@@ -148,19 +148,26 @@ class jmethod:
       if opcode in OPCODE_NAMES:
         name = OPCODE_NAMES[opcode]
 
-      print "%d: %.2x %s" % (i, opcode, name)
+      print "%d: %.2x %s" % (i, opcode, name),
 
       # XXX: Temporary, temporary hack to handle invokespecial
       if opcode == 0x12:
+        print self._code[i + 1]
         i += 1
       elif opcode == 0xb2:
+        print "%s, %s" % (self._code[i + 1], self._code[i + 2])
         i += 2
       elif opcode == 0xb6:
+        print "%s, %s" % (self._code[i + 1], self._code[i + 2])
         i += 2
       elif opcode == 0xb7:
+        print "%s, %s" % (self._code[i + 1], self._code[i + 2])
         i += 2
       elif opcode == 0xb8:
+        print "%s, %s" % (self._code[i + 1], self._code[i + 2])
         i += 2
+      else:
+        print
 
       i += 1
 
