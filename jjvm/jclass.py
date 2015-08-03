@@ -43,15 +43,15 @@ class jclass:
       readU2(clazz)
       methodNameIndex = readU2(clazz)
 
-      print "First method name index: %d" % methodNameIndex
+      # print "First method name index: %d" % methodNameIndex
       print "Method name: %s" % self._utf8Strings[methodNameIndex]
 
       descriptorIndex = readU2(clazz)
-      print "Descriptor: %s\n" % self._utf8Strings[descriptorIndex]
+      print "Descriptor: %s" % self._utf8Strings[descriptorIndex]
 
       self._readAttributes(clazz)
 
-      print "Pos: %x" % clazz.tell()
+      print "\nPos: %x" % clazz.tell()
 
   def _readAttributes(self, clazz):
       attributesCount = readU2(clazz)
