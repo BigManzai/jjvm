@@ -65,13 +65,30 @@ class jclass:
 
   def _readMethodAttribute(self, clazz, index):
       """Read the top level details of a method attribute"""
-      attributeNameIndex = readU2(clazz)
-      print "Name: %s" % self._utf8Strings[attributeNameIndex]
-      
+      attrNameIndex = readU2(clazz)
+      attrName = self._utf8Strings[attrNameIndex]
+      print "Name: %s" % attrName
+
+      if "Code" == attrName:
+        self._readMethodCodeAttribute(clazz)
+      else:
+        clazz.read(attrLen)
+
+  def _readMethodCodeAttribute(self, clazz):
+      """Read a method code attribute"""
+
       attrLen = readU4(clazz)
       print "Length: %d" % attrLen
+  
+      # max stack
+      readU2(clazz)
+      # max locals
+      readU2(clazz)
 
-      clazz.read(attrLen)
+      codeLen = readU4(clazz)
+      print "Code length: %d" % codeLen
+
+      clazz.read(attrLen - codeLen - 4)
 
   def _readCp(self, clazz):
       cpCount = readU2(clazz) - 1
