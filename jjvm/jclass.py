@@ -20,6 +20,36 @@ TAG_NAMES = {
 }
 
 class jclass:
+  def __init__(self, path):
+    with open(path, "rb") as clazz:
+      clazz.seek(8)
+      cpCount = readU2(clazz) - 1
+      cpIndex = 1
+
+      print "Constant pool count: %d" % cpCount;
+
+      while cpIndex <= cpCount:
+        # print "Reading field %d" % cpIndex
+        print "%d %s" % (cpIndex, jclass.readToNextCpStruct(clazz))
+        cpIndex += 1
+
+      # Skip access flags, tjhis class, super class refs
+      clazz.seek(6, os.SEEK_CUR)
+
+      # TODO: Yes, need to deal with when these aren't actually 0!
+      print "\nInterfaces count: %d" % readU2(clazz)
+      print "Fields count: %d" % readU2(clazz)
+
+      methodsCount = readU2(clazz)
+      print "Methods count: %d" % methodsCount
+
+      readU2(clazz)
+      methodNameIndex = readU2(clazz)
+
+      print "First method name index: %d" % methodNameIndex
+
+      print "Pos: %x" % clazz.tell()
+
   @staticmethod
   def readToNextCpStruct(clazz):
     tag = ord(clazz.read(1))
