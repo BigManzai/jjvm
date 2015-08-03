@@ -48,6 +48,9 @@ class jclass:
 
       descriptorIndex = readU2(clazz)
       print "Descriptor: %s" % self._utf8Strings[descriptorIndex]
+  
+      attributesCount = readU2(clazz)
+      print "Attributes: %d" % attributesCount
 
       print "Pos: %x" % clazz.tell()
 
