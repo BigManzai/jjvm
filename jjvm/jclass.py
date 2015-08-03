@@ -1,4 +1,4 @@
-from jutil import readU2
+from jutil import readU2, readU4
 import os
 import sys
 
@@ -37,7 +37,7 @@ class jclass:
       print "Fields count: %d" % readU2(clazz)
 
       methodsCount = readU2(clazz)
-      print "Methods count: %d" % methodsCount
+      print "Methods count: %d\n" % methodsCount
 
       # access_flags
       readU2(clazz)
@@ -47,12 +47,29 @@ class jclass:
       print "Method name: %s" % self._utf8Strings[methodNameIndex]
 
       descriptorIndex = readU2(clazz)
-      print "Descriptor: %s" % self._utf8Strings[descriptorIndex]
-  
+      print "Descriptor: %s\n" % self._utf8Strings[descriptorIndex]
+
+      self._readAttributes(clazz)
+
+      print "Pos: %x" % clazz.tell()
+
+  def _readAttributes(self, clazz):
       attributesCount = readU2(clazz)
       print "Attributes: %d" % attributesCount
 
-      print "Pos: %x" % clazz.tell()
+      attributesIndex = 1
+      while attributesIndex <= attributesCount:
+        self._readAttribute(clazz, attributesIndex)
+        attributesIndex += 1
+
+  def _readAttribute(self, clazz, index):
+      attributeNameIndex = readU2(clazz)
+      print "Name: %s" % self._utf8Strings[attributeNameIndex]
+      
+      attrLen = readU4(clazz)
+      print "Length: %d" % attrLen
+
+      clazz.read(attrLen)
 
   def _readCp(self, clazz):
       cpCount = readU2(clazz) - 1
