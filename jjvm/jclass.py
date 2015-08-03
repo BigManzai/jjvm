@@ -20,18 +20,14 @@ TAG_NAMES = {
 }
 
 class jclass:
+  # Indexed by field
+  _utf8Strings = {}
+
   def __init__(self, path):
     with open(path, "rb") as clazz:
       clazz.seek(8)
-      cpCount = readU2(clazz) - 1
-      cpIndex = 1
 
-      print "Constant pool count: %d" % cpCount;
-
-      while cpIndex <= cpCount:
-        # print "Reading field %d" % cpIndex
-        print "%d %s" % (cpIndex, jclass.readToNextCpStruct(clazz))
-        cpIndex += 1
+      self._readCp(clazz)
 
       # Skip access flags, tjhis class, super class refs
       clazz.seek(6, os.SEEK_CUR)
@@ -50,8 +46,18 @@ class jclass:
 
       print "Pos: %x" % clazz.tell()
 
-  @staticmethod
-  def readToNextCpStruct(clazz):
+  def _readCp(self, clazz):
+      cpCount = readU2(clazz) - 1
+      cpIndex = 1
+
+      print "Constant pool count: %d" % cpCount;
+
+      while cpIndex <= cpCount:
+        # print "Reading field %d" % cpIndex
+        print "%d %s" % (cpIndex, self._readToNextCpStruct(clazz))
+        cpIndex += 1
+
+  def _readToNextCpStruct(self, clazz):
     tag = ord(clazz.read(1))
 
     # print "Tag %d %s" % (tag, TAG_NAMES[tag])
