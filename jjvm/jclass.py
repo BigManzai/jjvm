@@ -102,23 +102,30 @@ class jclass:
 
 class jmethod:
   _clazz = None
+  _nameIndex = -1
+  _descriptorIndex = -1
 
   def __init__(self, clazz, f):
       self._clazz = clazz
 
       # access_flags
       readU2(f)
-      methodNameIndex = readU2(f)
+      self._nameIndex = readU2(f)
 
-      # print "First method name index: %d" % methodNameIndex
-      print "Method name: %s" % self._clazz._utf8Strings[methodNameIndex]
+      print "Method name: %s" % self.getName()
 
-      descriptorIndex = readU2(f)
-      print "Descriptor: %s" % self._clazz._utf8Strings[descriptorIndex]
+      self._descriptorIndex = readU2(f)
+      print "Descriptor: %s" % self.getDescriptor()
 
       self._readMethodAttributes(f)
 
       print "\nPos: %x" % f.tell()
+
+  def getName(self):
+    return self._clazz._utf8Strings[self._nameIndex]
+  
+  def getDescriptor(self):
+    return self._clazz._utf8Strings[self._descriptorIndex]
 
   def _readMethodAttributes(self, f):
       """Read the method attributes section"""
