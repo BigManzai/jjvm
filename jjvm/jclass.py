@@ -33,36 +33,36 @@ class jclass:
   _methods = {}
 
   def __init__(self, path):
-    with open(path, "rb") as clazz:
-      clazz.seek(8)
+    with open(path, "rb") as f:
+      f.seek(8)
 
-      self._readCp(clazz)
+      self._readCp(f)
 
       # Skip access flags, tjhis class, super class refs
-      clazz.seek(6, os.SEEK_CUR)
+      f.seek(6, os.SEEK_CUR)
 
       # TODO: Yes, need to deal with when these aren't actually 0!
-      print "\nInterfaces count: %d" % readU2(clazz)
-      print "Fields count: %d" % readU2(clazz)
+      print "\nInterfaces count: %d" % readU2(f)
+      print "Fields count: %d" % readU2(f)
 
-      methodsCount = readU2(clazz)
+      methodsCount = readU2(f)
       print "Methods count: %d\n" % methodsCount
 
-      m = jmethod(self, clazz)
+      m = jmethod(self, f)
 
-  def _readCp(self, clazz):
-      cpCount = readU2(clazz) - 1
+  def _readCp(self, f):
+      cpCount = readU2(f) - 1
       cpIndex = 1
 
       print "Constant pool count: %d" % cpCount;
 
       while cpIndex <= cpCount:
         # print "Reading field %d" % cpIndex
-        print "%d %s" % (cpIndex, self._readToNextCpStruct(clazz, cpIndex))
+        print "%d %s" % (cpIndex, self._readToNextCpStruct(f, cpIndex))
         cpIndex += 1
 
-  def _readToNextCpStruct(self, clazz, index):
-    tag = ord(clazz.read(1))
+  def _readToNextCpStruct(self, f, index):
+    tag = ord(f.read(1))
 
     # print "Tag %d %s" % (tag, TAG_NAMES[tag])
     res = TAG_NAMES[tag]
@@ -72,9 +72,9 @@ class jclass:
     if tag == 1:
       # FIXME: Yes, this will blow badly on encountering anything other than ASCII
       # https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html
-      strLen = readU2(clazz)
+      strLen = readU2(f)
       res += " "
-      utf8 = clazz.read(strLen)
+      utf8 = f.read(strLen)
       self._utf8Strings[index] = utf8
       res += utf8
       # print struct.unpack("s", clazz.read(strLen))[0]
@@ -96,7 +96,7 @@ class jclass:
     # print "Remaining seek %d" % remainingSeek
 
     if remainingSeek > 0:
-      clazz.seek(remainingSeek, os.SEEK_CUR)
+      f.seek(remainingSeek, os.SEEK_CUR)
 
     return res
 
