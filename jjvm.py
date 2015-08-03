@@ -28,9 +28,9 @@ parser.add_argument('path', help='path to class')
 args = parser.parse_args()
 
 clazz = jclass(args.path)
-initMethod = clazz.getMethod("<init>")
 
-print
-
-if initMethod:
-  initMethod.printCode()
+for m in clazz.getMethods().values():
+  print "Method name: %s" % m.getName()
+  print "Descriptor: %s" % m.getDescriptor()
+  m.printCode()
+  print

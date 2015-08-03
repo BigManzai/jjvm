@@ -38,6 +38,9 @@ class jclass:
     else:
       return None
 
+  def getMethods(self):
+    return self._methods
+
   def __init__(self, path):
     with open(path, "rb") as f:
       f.seek(8)
@@ -54,8 +57,9 @@ class jclass:
       methodsCount = readU2(f)
       print "Methods count: %d\n" % methodsCount
 
-      m = jmethod(self, f)
-      self._methods[m.getName()] = m
+      for i in range(methodsCount):
+        m = jmethod(self, f)
+        self._methods[m.getName()] = m
 
   def _readCp(self, f):
       cpCount = readU2(f) - 1
@@ -119,15 +123,10 @@ class jmethod:
       # access_flags
       readU2(f)
       self._nameIndex = readU2(f)
-
-      print "Method name: %s" % self.getName()
-
       self._descriptorIndex = readU2(f)
-      print "Descriptor: %s" % self.getDescriptor()
-
       self._readMethodAttributes(f)
 
-      print "\nPos: %x" % f.tell()
+      # print "\nPos: %x" % f.tell()
 
   def getName(self):
     return self._clazz._utf8Strings[self._nameIndex]
@@ -155,7 +154,7 @@ class jmethod:
   def _readMethodAttributes(self, f):
       """Read the method attributes section"""
       attributesCount = readU2(f)
-      print "Attributes: %d" % attributesCount
+      # print "Attributes: %d" % attributesCount
 
       attributesIndex = 1
       while attributesIndex <= attributesCount:
@@ -166,7 +165,7 @@ class jmethod:
       """Read the top level details of a method attribute"""
       attrNameIndex = readU2(f)
       attrName = self._clazz._utf8Strings[attrNameIndex]
-      print "Name: %s" % attrName
+      # print "Name: %s" % attrName
 
       if "Code" == attrName:
         self._readMethodCodeAttribute(f)
@@ -177,7 +176,7 @@ class jmethod:
       """Read a method code attribute"""
 
       attrLen = readU4(f)
-      print "Length: %d" % attrLen
+      # print "Length: %d" % attrLen
   
       # max stack
       readU2(f)
@@ -194,4 +193,4 @@ class jmethod:
         self._code.append(ord(f.read(1)))
         codeCount += 1
 
-      f.read(attrLen - 8)
+      f.read(attrLen - codeLen - 8)
