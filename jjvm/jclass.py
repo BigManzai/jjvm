@@ -101,8 +101,10 @@ class jclass:
       remainingSeek = 2
     elif tag == 9:
       remainingSeek = 4
-    elif tag == 10:
-      remainingSeek = 4
+    elif tag == 10: # Methodref
+      classIndex = readU2(f)
+      nameAndTypeIndex = readU2(f)
+      res += " %d, %d" % (classIndex, nameAndTypeIndex)
     elif tag == 12:
       remainingSeek = 4
     else:
