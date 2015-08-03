@@ -98,8 +98,9 @@ class jclass:
     elif tag == 7: # Class
       nameIndex = readU2(f)
       res += " %d" % nameIndex
-    elif tag == 8:
-      remainingSeek = 2
+    elif tag == 8: # String
+      stringIndex = readU2(f)
+      res += " %d" % stringIndex
     elif tag == 9: # Fieldref
       classIndex = readU2(f)
       nameAndTypeIndex = readU2(f)
