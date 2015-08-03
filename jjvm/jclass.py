@@ -109,6 +109,10 @@ class jclass:
       classIndex = readU2(f)
       nameAndTypeIndex = readU2(f)
       res += " %d, %d" % (classIndex, nameAndTypeIndex)
+    elif tag == 11: # InterfaceMethodref
+      classIndex = readU2(f)
+      nameAndTypeIndex = readU2(f)
+      res += " %d, %d" % (classIndex, nameAndTypeIndex)
     elif tag == 12: # NameAndType
       nameIndex = readU2(f)
       descriptorIndex = readU2(f)
