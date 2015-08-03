@@ -95,19 +95,23 @@ class jclass:
       res += utf8
       # print struct.unpack("s", clazz.read(strLen))[0]
       # remainingSeek = readU2(clazz)
-    elif tag == 7:
+    elif tag == 7: # Class
       nameIndex = readU2(f)
       res += " %d" % nameIndex
     elif tag == 8:
       remainingSeek = 2
-    elif tag == 9:
-      remainingSeek = 4
+    elif tag == 9: # Fieldref
+      classIndex = readU2(f)
+      nameAndTypeIndex = readU2(f)
+      res += " %d, %d" % (classIndex, nameAndTypeIndex)
     elif tag == 10: # Methodref
       classIndex = readU2(f)
       nameAndTypeIndex = readU2(f)
       res += " %d, %d" % (classIndex, nameAndTypeIndex)
-    elif tag == 12:
-      remainingSeek = 4
+    elif tag == 12: # NameAndType
+      nameIndex = readU2(f)
+      descriptorIndex = readU2(f)
+      res += " %d, %d" % (nameIndex, descriptorIndex)
     else:
       print "ERROR: Unrecognized tag %d" % tag
       sys.exit(1)
