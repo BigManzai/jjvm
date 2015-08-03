@@ -22,10 +22,12 @@ TAG_NAMES = {
 OPCODE_NAMES = {
   0x12:"ldc",
   0x2a:"aload_0",
+  0x57:"pop",
   0xb1:"return",
   0xb2:"getstatic",
   0xb6:"invokevirtual",
-  0xb7:"invokespecial"
+  0xb7:"invokespecial",
+  0xb8:"invokestatic"
 }
 
 class jclass:
@@ -156,6 +158,8 @@ class jmethod:
       elif opcode == 0xb6:
         i += 2
       elif opcode == 0xb7:
+        i += 2
+      elif opcode == 0xb8:
         i += 2
 
       i += 1
