@@ -19,6 +19,12 @@ TAG_NAMES = {
   18:"InvokeDynamic"
 }
 
+OPCODE_NAMES = {
+  0x2a:"aload_0",
+  0xb1:"return",
+  0xb7:"invokespecial"
+}
+
 class jclass:
   # Indexed by field
   _utf8Strings = {}
@@ -90,7 +96,13 @@ class jclass:
 
       codeCount = 1
       while codeCount <= codeLen:
-        print "%d: %.2x" % (codeCount, ord(clazz.read(1)))
+        opcode = ord(clazz.read(1))
+        name = ""
+
+        if opcode in OPCODE_NAMES:
+          name = OPCODE_NAMES[opcode]
+
+        print "%d: %.2x %s" % (codeCount, opcode, name)
         codeCount += 1
 
       clazz.read(attrLen - 8)
