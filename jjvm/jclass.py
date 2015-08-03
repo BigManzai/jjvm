@@ -20,8 +20,11 @@ TAG_NAMES = {
 }
 
 OPCODE_NAMES = {
+  0x12:"ldc",
   0x2a:"aload_0",
   0xb1:"return",
+  0xb2:"getstatic",
+  0xb6:"invokevirtual",
   0xb7:"invokespecial"
 }
 
@@ -146,7 +149,13 @@ class jmethod:
       print "%d: %.2x %s" % (i, opcode, name)
 
       # XXX: Temporary, temporary hack to handle invokespecial
-      if opcode == 0xb7:
+      if opcode == 0x12:
+        i += 1
+      elif opcode == 0xb2:
+        i += 2
+      elif opcode == 0xb6:
+        i += 2
+      elif opcode == 0xb7:
         i += 2
 
       i += 1
