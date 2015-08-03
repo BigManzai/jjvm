@@ -29,6 +29,9 @@ class jclass:
   # Indexed by field
   _utf8Strings = {}
 
+  # FIXME: indexed by simple name
+  _methods = {}
+
   def __init__(self, path):
     with open(path, "rb") as clazz:
       clazz.seek(8)
@@ -45,73 +48,7 @@ class jclass:
       methodsCount = readU2(clazz)
       print "Methods count: %d\n" % methodsCount
 
-      # access_flags
-      readU2(clazz)
-      methodNameIndex = readU2(clazz)
-
-      # print "First method name index: %d" % methodNameIndex
-      print "Method name: %s" % self._utf8Strings[methodNameIndex]
-
-      descriptorIndex = readU2(clazz)
-      print "Descriptor: %s" % self._utf8Strings[descriptorIndex]
-
-      self._readMethodAttributes(clazz)
-
-      print "\nPos: %x" % clazz.tell()
-
-  def _readMethodAttributes(self, clazz):
-      """Read the method attributes section"""
-      attributesCount = readU2(clazz)
-      print "Attributes: %d" % attributesCount
-
-      attributesIndex = 1
-      while attributesIndex <= attributesCount:
-        self._readMethodAttribute(clazz, attributesIndex)
-        attributesIndex += 1
-
-  def _readMethodAttribute(self, clazz, index):
-      """Read the top level details of a method attribute"""
-      attrNameIndex = readU2(clazz)
-      attrName = self._utf8Strings[attrNameIndex]
-      print "Name: %s" % attrName
-
-      if "Code" == attrName:
-        self._readMethodCodeAttribute(clazz)
-      else:
-        clazz.read(attrLen)
-
-  def _readMethodCodeAttribute(self, clazz):
-      """Read a method code attribute"""
-
-      attrLen = readU4(clazz)
-      print "Length: %d" % attrLen
-  
-      # max stack
-      readU2(clazz)
-      # max locals
-      readU2(clazz)
-
-      codeLen = readU4(clazz)
-      print "Code length: %d" % codeLen
-
-      codeCount = 1
-      while codeCount <= codeLen:
-        opcode = ord(clazz.read(1))
-        name = ""
-
-        if opcode in OPCODE_NAMES:
-          name = OPCODE_NAMES[opcode]
-
-        print "%d: %.2x %s" % (codeCount, opcode, name)
-
-        # XXX: Temporary, temporary hack to handle invokespecial
-        if opcode == 0xb7:
-          clazz.read(2)
-          codeCount += 2
-
-        codeCount += 1
-
-      clazz.read(attrLen - 8)
+      m = jmethod(self, clazz)
 
   def _readCp(self, clazz):
       cpCount = readU2(clazz) - 1
@@ -162,3 +99,77 @@ class jclass:
       clazz.seek(remainingSeek, os.SEEK_CUR)
 
     return res
+
+class jmethod:
+  _clazz = None
+
+  def __init__(self, clazz, f):
+      self._clazz = clazz
+
+      # access_flags
+      readU2(f)
+      methodNameIndex = readU2(f)
+
+      # print "First method name index: %d" % methodNameIndex
+      print "Method name: %s" % self._clazz._utf8Strings[methodNameIndex]
+
+      descriptorIndex = readU2(f)
+      print "Descriptor: %s" % self._clazz._utf8Strings[descriptorIndex]
+
+      self._readMethodAttributes(f)
+
+      print "\nPos: %x" % f.tell()
+
+  def _readMethodAttributes(self, f):
+      """Read the method attributes section"""
+      attributesCount = readU2(f)
+      print "Attributes: %d" % attributesCount
+
+      attributesIndex = 1
+      while attributesIndex <= attributesCount:
+        self._readMethodAttribute(f, attributesIndex)
+        attributesIndex += 1
+
+  def _readMethodAttribute(self, f, index):
+      """Read the top level details of a method attribute"""
+      attrNameIndex = readU2(f)
+      attrName = self._clazz._utf8Strings[attrNameIndex]
+      print "Name: %s" % attrName
+
+      if "Code" == attrName:
+        self._readMethodCodeAttribute(f)
+      else:
+        f.read(attrLen)
+
+  def _readMethodCodeAttribute(self, f):
+      """Read a method code attribute"""
+
+      attrLen = readU4(f)
+      print "Length: %d" % attrLen
+  
+      # max stack
+      readU2(f)
+      # max locals
+      readU2(f)
+
+      codeLen = readU4(f)
+      print "Code length: %d" % codeLen
+
+      codeCount = 1
+      while codeCount <= codeLen:
+        opcode = ord(f.read(1))
+        name = ""
+
+        if opcode in OPCODE_NAMES:
+          name = OPCODE_NAMES[opcode]
+
+        print "%d: %.2x %s" % (codeCount, opcode, name)
+
+        # XXX: Temporary, temporary hack to handle invokespecial
+        if opcode == 0xb7:
+          f.read(2)
+          codeCount += 2
+
+        codeCount += 1
+
+      f.read(attrLen - 8)
