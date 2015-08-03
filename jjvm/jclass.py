@@ -32,6 +32,12 @@ class jclass:
   # FIXME: indexed by simple name
   _methods = {}
 
+  def getMethod(self, name):
+    if name in self._methods:
+      return self._methods[name]
+    else:
+      return None
+
   def __init__(self, path):
     with open(path, "rb") as f:
       f.seek(8)
@@ -49,6 +55,7 @@ class jclass:
       print "Methods count: %d\n" % methodsCount
 
       m = jmethod(self, f)
+      self._methods[m.getName()] = m
 
   def _readCp(self, f):
       cpCount = readU2(f) - 1
@@ -104,6 +111,7 @@ class jmethod:
   _clazz = None
   _nameIndex = -1
   _descriptorIndex = -1
+  _code = None
 
   def __init__(self, clazz, f):
       self._clazz = clazz
@@ -126,6 +134,23 @@ class jmethod:
   
   def getDescriptor(self):
     return self._clazz._utf8Strings[self._descriptorIndex]
+
+  def printCode(self):
+    i = 0
+    while i < len(self._code):
+      opcode = self._code[i]
+      name = ""
+
+      if opcode in OPCODE_NAMES:
+        name = OPCODE_NAMES[opcode]
+
+      print "%d: %.2x %s" % (i, opcode, name)
+
+      # XXX: Temporary, temporary hack to handle invokespecial
+      if opcode == 0xb7:
+        i += 2
+
+      i += 1
 
   def _readMethodAttributes(self, f):
       """Read the method attributes section"""
@@ -160,23 +185,13 @@ class jmethod:
       readU2(f)
 
       codeLen = readU4(f)
-      print "Code length: %d" % codeLen
+      # print "Code length: %d" % codeLen
+      
+      self._code = []
 
       codeCount = 1
       while codeCount <= codeLen:
-        opcode = ord(f.read(1))
-        name = ""
-
-        if opcode in OPCODE_NAMES:
-          name = OPCODE_NAMES[opcode]
-
-        print "%d: %.2x %s" % (codeCount, opcode, name)
-
-        # XXX: Temporary, temporary hack to handle invokespecial
-        if opcode == 0xb7:
-          f.read(2)
-          codeCount += 2
-
+        self._code.append(ord(f.read(1)))
         codeCount += 1
 
       f.read(attrLen - 8)

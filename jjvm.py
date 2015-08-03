@@ -27,4 +27,10 @@ parser = MyParser('Run bytecode in jjvm')
 parser.add_argument('path', help='path to class')
 args = parser.parse_args()
 
-jclass(args.path)
+clazz = jclass(args.path)
+initMethod = clazz.getMethod("<init>")
+
+print
+
+if initMethod:
+  initMethod.printCode()
