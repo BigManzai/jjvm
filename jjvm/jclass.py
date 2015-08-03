@@ -103,6 +103,12 @@ class jclass:
           name = OPCODE_NAMES[opcode]
 
         print "%d: %.2x %s" % (codeCount, opcode, name)
+
+        # XXX: Temporary, temporary hack to handle invokespecial
+        if opcode == 0xb7:
+          clazz.read(2)
+          codeCount += 2
+
         codeCount += 1
 
       clazz.read(attrLen - 8)
