@@ -179,6 +179,7 @@ class jmethod:
       if "Code" == attrName:
         self._readMethodCodeAttribute(f)
       else:
+        attrLen = readU4(f)
         f.read(attrLen)
 
   def _readMethodCodeAttribute(self, f):
