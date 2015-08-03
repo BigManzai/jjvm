@@ -49,20 +49,22 @@ class jclass:
       descriptorIndex = readU2(clazz)
       print "Descriptor: %s" % self._utf8Strings[descriptorIndex]
 
-      self._readAttributes(clazz)
+      self._readMethodAttributes(clazz)
 
       print "\nPos: %x" % clazz.tell()
 
-  def _readAttributes(self, clazz):
+  def _readMethodAttributes(self, clazz):
+      """Read the method attributes section"""
       attributesCount = readU2(clazz)
       print "Attributes: %d" % attributesCount
 
       attributesIndex = 1
       while attributesIndex <= attributesCount:
-        self._readAttribute(clazz, attributesIndex)
+        self._readMethodAttribute(clazz, attributesIndex)
         attributesIndex += 1
 
-  def _readAttribute(self, clazz, index):
+  def _readMethodAttribute(self, clazz, index):
+      """Read the top level details of a method attribute"""
       attributeNameIndex = readU2(clazz)
       print "Name: %s" % self._utf8Strings[attributeNameIndex]
       
